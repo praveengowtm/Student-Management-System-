@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System - DBMS / JDBC Lab</title>
+    <style>
+        /* ============================================================
+           Theme: Clean, Modern, Professional Light Design with Blue Accents
+           Maintains 100% of the existing color palette, layout & styling
+           ============================================================ */
+        :root {
+            --primary: #1976d2;
+            --primary-dark: #0d47a1;
+            --primary-light: #e3f2fd;
+            --accent: #2196f3;
+            --warning: #d97706;
+            --warning-dark: #b45309;
+            --success: #2e7d32;
+            --success-light: #e8f5e9;
+            --danger: #dc2626;
+            --danger-dark: #b91c1c;
+            --danger-light: #ffebee;
+            --danger-hover: #ef9a9a;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+            --bg-page: #f4f6f9;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --radius: 8px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding-bottom: 50px;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: #ffffff;
+            padding: 22px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 28px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 2.2rem;
+        }
+
+        .app-header h1 {
+            font-size: 1.55rem;
+            font-weight: 700;
+        }
+
+        .app-header p {
+            font-size: 0.88rem;
+            opacity: 0.9;
+        }
+
+        .header-tag {
+            background-color: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+
+        /* Alert Notification Banner */
+        .alert {
+            padding: 12px 18px;
+            border-radius: var(--radius);
+            margin-bottom: 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: var(--success-light);
+            color: var(--success);
+            border: 1px solid #c8e6c9;
+        }
+
+        .alert-error {
+            background-color: var(--danger-light);
+            color: var(--danger);
+            border: 1px solid #ffcdd2;
+        }
+
+        .alert-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: inherit;
+            line-height: 1;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 22px;
+            background-color: #fafbfc;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .card-header h2 {
+            font-size: 1.18rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .badge-op {
+            font-size: 0.72rem;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 4px 9px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Form Styling */
+        .form-body {
+            padding: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #334155;
+        }
+
+        .form-group label .req {
+            color: var(--danger);
+        }
+
+        .form-group input {
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
+        }
+
+        .form-group .hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* The 3 Main Action Buttons Container */
+        .form-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            padding-top: 5px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            text-decoration: none;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Button Variants */
+        .btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 2px 6px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: #ffffff;
+        }
+
+        .btn-warning:hover {
+            background-color: var(--warning-dark);
+            box-shadow: 0 2px 6px rgba(217, 119, 6, 0.3);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-dark);
+            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #64748b;
+            color: #ffffff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #475569;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 7px 14px;
+            font-size: 0.85rem;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 0.82rem;
+            border-radius: 4px;
+        }
+
+        .btn-edit {
+            background-color: #eff6ff;
+            color: var(--primary);
+            border: 1px solid #bfdbfe;
+            margin-right: 6px;
+        }
+
+        .btn-edit:hover {
+            background-color: #dbeafe;
+        }
+
+        .btn-table-delete {
+            background-color: var(--danger-light);
+            color: var(--danger);
+            border: 1px solid #ffcdd2;
+        }
+
+        .btn-table-delete:hover {
+            background-color: var(--danger-hover);
+        }
+
+        /* Search Section in Records Card */
+        .records-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box input {
+            padding: 8px 12px 8px 34px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            width: 250px;
+            transition: width 0.2s, border-color 0.2s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            width: 280px;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.12);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        /* Table Styling */
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        .student-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .student-table th,
+        .student-table td {
+            padding: 13px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.92rem;
+        }
+
+        .student-table th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .student-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .id-cell {
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .name-cell {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .dept-tag {
+            display: inline-block;
+            background-color: #f1f5f9;
+            color: #334155;
+            padding: 3px 9px;
+            border-radius: 4px;
+            font-size: 0.83rem;
+            font-weight: 500;
+        }
+
+        .actions-cell {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 45px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state p {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 30px;
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="container header-content">
+            <div class="logo-group">
+                <span class="logo-icon">&#127891;</span>
+                <div>
+                    <h1>Student Management System</h1>
+                    <p>DBMS / JDBC Lab Assessment Portal</p>
+                </div>
+            </div>
+            <div class="header-tag">Interactive Client-Side Demonstration</div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="container">
+
+        <!-- Notification Banner -->
+        <div id="alertBanner" class="alert hidden">
+            <span id="alertText"></span>
+            <button type="button" class="alert-close" onclick="hideAlert()">&times;</button>
+        </div>
+
+        <!-- Section 1: Student Form with 3 Action Buttons below inputs -->
+        <section class="card" id="formCard">
+            <div class="card-header">
+                <h2>Student Entry &amp; Operations</h2>
+                <span class="badge-op">Add &bull; Update &bull; Delete</span>
+            </div>
+            <div class="form-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="studentId">Student ID <span class="req">*</span></label>
+                        <input type="number" id="studentId" placeholder="e.g. 106" min="1" required>
+                        <span class="hint">Primary Key (Unique)</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Student Name <span class="req">*</span></label>
+                        <input type="text" id="name" placeholder="e.g. Kavya Raman" required>
+                        <span class="hint">Full name</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department">Department <span class="req">*</span></label>
+                        <input type="text" id="department" placeholder="e.g. Computer Science" required>
+                        <span class="hint">Academic branch</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="req">*</span></label>
+                        <input type="email" id="email" placeholder="e.g. kavya@college.edu" required>
+                        <span class="hint">Institutional email</span>
+                    </div>
+                </div>
+
+                <!-- Three Main Buttons placed side-by-side below input fields -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" id="btnAddStudent" onclick="handleAddStudent()">
+                        &#43; Add Student
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btnUpdateStudent" onclick="handleUpdateStudent()">
+                        &#9999;&#65039; Update Student
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btnDeleteStudent" onclick="handleDeleteStudent()">
+                        &#128465;&#65039; Delete Student
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                        Clear Form
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Student Records Table & Search -->
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Student Records</h2>
+                    <span class="badge-op">Live Table &amp; Search</span>
+                </div>
+
+                <!-- Search and Reset Controls -->
+                <div class="records-controls">
+                    <div class="search-box">
+                        <span class="search-icon">&#128269;</span>
+                        <input type="text" id="searchInput" placeholder="Search by name, ID, dept..." oninput="handleSearch()">
+                    </div>
+                    <button type="button" class="btn btn-outline" onclick="resetSearch()">
+                        &#x21bb; Reset Search
+                    </button>
+                </div>
+            </div>
+
+            <!-- Responsive Table -->
+            <div class="table-wrap">
+                <table class="student-table" id="studentTable">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Email</th>
+                            <th style="text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTableBody">
+                        <!-- Dynamically populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty Search State -->
+            <div id="noRecordsState" class="empty-state hidden">
+                <p>No matching student records found.</p>
+                <small>Try a different keyword or click 'Reset Search'.</small>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="app-footer">
+        <p>College DBMS / JDBC Lab Assessment &bull; Student Management System</p>
+    </footer>
+
+    <!-- ============================================================
+         JavaScript Application Logic
+         Runs immediately in any browser with zero setup!
+         ============================================================ -->
+    <script>
+        // Sample student dataset (matches initial database.sql records)
+        let students = [
+            {
+                studentId: 101,
+                name: "Aarav Sharma",
+                department: "Computer Science and Engineering",
+                email: "aarav.sharma@college.edu"
+            },
+            {
+                studentId: 102,
+                name: "Priya Patel",
+                department: "Information Technology",
+                email: "priya.patel@college.edu"
+            },
+            {
+                studentId: 103,
+                name: "Rohan Verma",
+                department: "Electronics and Communication",
+                email: "rohan.verma@college.edu"
+            },
+            {
+                studentId: 104,
+                name: "Sneha Reddy",
+                department: "Computer Science and Engineering",
+                email: "sneha.reddy@college.edu"
+            },
+            {
+                studentId: 105,
+                name: "Vikram Singh",
+                department: "Mechanical Engineering",
+                email: "vikram.singh@college.edu"
+            }
+        ];
+
+        let alertTimeout = null;
+
+        // Initialize table when DOM loads
+        document.addEventListener("DOMContentLoaded", () => {
+            renderTable(students);
+        });
+
+        // 1. RENDER TABLE
+        function renderTable(dataToDisplay) {
+            const tbody = document.getElementById("studentTableBody");
+            const emptyBox = document.getElementById("noRecordsState");
+
+            tbody.innerHTML = "";
+
+            if (!dataToDisplay || dataToDisplay.length === 0) {
+                emptyBox.classList.remove("hidden");
+                return;
+            }
+
+            emptyBox.classList.add("hidden");
+
+            dataToDisplay.forEach(student => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td class="id-cell">${student.studentId}</td>
+                    <td class="name-cell">${escapeHtml(student.name)}</td>
+                    <td><span class="dept-tag">${escapeHtml(student.department)}</span></td>
+                    <td>${escapeHtml(student.email)}</td>
+                    <td class="actions-cell">
+                        <button type="button" class="btn btn-sm btn-edit" onclick="selectStudentForEdit(${student.studentId})">
+                            Edit
+                        </button>
+                        <button type="button" class="btn btn-sm btn-table-delete" onclick="deleteStudentById(${student.studentId})">
+                            Delete
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 2. BUTTON 1: ADD STUDENT
+        function handleAddStudent() {
+            const idInput = document.getElementById("studentId");
+            const nameInput = document.getElementById("name");
+            const deptInput = document.getElementById("department");
+            const emailInput = document.getElementById("email");
+
+            const id = parseInt(idInput.value.trim(), 10);
+            const name = nameInput.value.trim();
+            const department = deptInput.value.trim();
+            const email = emailInput.value.trim();
+
+            // Validation
+            if (!id || id <= 0) {
+                showAlert("Please enter a valid positive Student ID.", "error");
+                idInput.focus();
+                return;
+            }
+
+            if (!name) {
+                showAlert("Please enter the Student Name.", "error");
+                nameInput.focus();
+                return;
+            }
+
+            if (!department) {
+                showAlert("Please enter the Department.", "error");
+                deptInput.focus();
+                return;
+            }
+
+            if (!email || !email.includes("@")) {
+                showAlert("Please enter a valid Email Address.", "error");
+                emailInput.focus();
+                return;
+            }
+
+            // Check if Primary Key already exists
+            const duplicate = students.some(s => s.studentId === id);
+            if (duplicate) {
+                showAlert(`Duplicate Key Error: Student ID ${id} already exists in database! Use 'Update Student' to modify.`, "error");
+                return;
+            }
+
+            // Insert new record
+            students.push({
+                studentId: id,
+                name: name,
+                department: department,
+                email: email
+            });
+
+            // Sort by Student ID ascending
+            students.sort((a, b) => a.studentId - b.studentId);
+
+            showAlert(`Success: Student "${name}" (ID: ${id}) added successfully!`, "success");
+
+            // Clear inputs and refresh table
+            clearForm();
+            handleSearch();
+        }
+
+        // 3. BUTTON 2: UPDATE STUDENT
+        function handleUpdateStudent() {
+            const idInput = document.getElementById("studentId");
+            const nameInput = document.getElementById("name");
+            const deptInput = document.getElementById("department");
+            const emailInput = document.getElementById("email");
+
+            const id = parseInt(idInput.value.trim(), 10);
+            const name = nameInput.value.trim();
+            const department = deptInput.value.trim();
+            const email = emailInput.value.trim();
+
+            if (!id || id <= 0) {
+                showAlert("Please enter or select a valid Student ID to update.", "error");
+                idInput.focus();
+                return;
+            }
+
+            const index = students.findIndex(s => s.studentId === id);
+            if (index === -1) {
+                showAlert(`Update Failed: Student with ID ${id} does not exist. Click 'Edit' in the table to select an existing student.`, "error");
+                return;
+            }
+
+            if (!name) {
+                showAlert("Student Name cannot be empty.", "error");
+                nameInput.focus();
+                return;
+            }
+
+            if (!department) {
+                showAlert("Department cannot be empty.", "error");
+                deptInput.focus();
+                return;
+            }
+
+            if (!email || !email.includes("@")) {
+                showAlert("Please enter a valid Email Address.", "error");
+                emailInput.focus();
+                return;
+            }
+
+            // Perform Update (ID remains unchanged)
+            students[index].name = name;
+            students[index].department = department;
+            students[index].email = email;
+
+            showAlert(`Success: Student record for ID ${id} (${name}) updated successfully!`, "success");
+
+            // Refresh table view
+            handleSearch();
+        }
+
+        // 4. BUTTON 3: DELETE STUDENT (From Form)
+        function handleDeleteStudent() {
+            const idInput = document.getElementById("studentId");
+            const id = parseInt(idInput.value.trim(), 10);
+
+            if (!id || id <= 0) {
+                showAlert("Please enter or select the Student ID you wish to delete.", "error");
+                idInput.focus();
+                return;
+            }
+
+            deleteStudentById(id);
+        }
+
+        // Core Delete Logic (used by both Delete button and table Delete button)
+        function deleteStudentById(id) {
+            const student = students.find(s => s.studentId === id);
+            if (!student) {
+                showAlert(`Delete Failed: Student with ID ${id} was not found in database records.`, "error");
+                return;
+            }
+
+            const confirmed = window.confirm(
+                `Are you sure you want to delete student "${student.name}" (ID: ${student.studentId})?\nThis action simulates a SQL DELETE statement.`
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            // Delete from array
+            students = students.filter(s => s.studentId !== id);
+
+            // If the deleted student was loaded in the form, clear the form
+            const formId = parseInt(document.getElementById("studentId").value.trim(), 10);
+            if (formId === id) {
+                clearForm();
+            }
+
+            showAlert(`Success: Student record for "${student.name}" (ID: ${id}) deleted successfully.`, "success");
+
+            // Refresh view
+            handleSearch();
+        }
+
+        // 5. TABLE 'EDIT' CLICK: Fills the form with selected student details
+        function selectStudentForEdit(id) {
+            const student = students.find(s => s.studentId === id);
+            if (!student) return;
+
+            // Automatically populate form fields
+            document.getElementById("studentId").value = student.studentId;
+            document.getElementById("name").value = student.name;
+            document.getElementById("department").value = student.department;
+            document.getElementById("email").value = student.email;
+
+            // Smooth scroll to the form card
+            document.getElementById("formCard").scrollIntoView({ behavior: "smooth", block: "start" });
+
+            // Focus name field ready for modification
+            document.getElementById("name").focus();
+
+            showAlert(`Loaded details for student "${student.name}" (ID: ${student.studentId}). Modify details and click 'Update Student'.`, "success");
+        }
+
+        // 6. SEARCH / FILTER
+        function handleSearch() {
+            const query = document.getElementById("searchInput").value.toLowerCase().trim();
+
+            if (!query) {
+                renderTable(students);
+                return;
+            }
+
+            const filtered = students.filter(student => {
+                return (
+                    student.studentId.toString().includes(query) ||
+                    student.name.toLowerCase().includes(query) ||
+                    student.department.toLowerCase().includes(query) ||
+                    student.email.toLowerCase().includes(query)
+                );
+            });
+
+            renderTable(filtered);
+        }
+
+        function resetSearch() {
+            document.getElementById("searchInput").value = "";
+            renderTable(students);
+            showAlert("Search reset. Showing all student records.", "success");
+        }
+
+        // 7. CLEAR FORM
+        function clearForm() {
+            document.getElementById("studentId").value = "";
+            document.getElementById("name").value = "";
+            document.getElementById("department").value = "";
+            document.getElementById("email").value = "";
+        }
+
+        // 8. NOTIFICATION UTILITY
+        function showAlert(msg, type = "success") {
+            const banner = document.getElementById("alertBanner");
+            const text = document.getElementById("alertText");
+
+            if (alertTimeout) {
+                clearTimeout(alertTimeout);
+            }
+
+            text.innerText = msg;
+            banner.className = `alert alert-${type}`;
+            banner.classList.remove("hidden");
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
+            alertTimeout = setTimeout(() => {
+                hideAlert();
+            }, 4500);
+        }
+
+        function hideAlert() {
+            document.getElementById("alertBanner").classList.add("hidden");
+        }
+
+        // 9. XSS Sanitizer
+        function escapeHtml(str) {
+            if (!str) return "";
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

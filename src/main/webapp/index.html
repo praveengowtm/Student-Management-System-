@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Main Navigation / Header -->
+    <header class="app-header">
+        <div class="container header-container">
+            <div class="logo-area">
+                <span class="logo-icon">&#127891;</span>
+                <div>
+                    <h1>Student Management System</h1>
+                    <p class="subtitle">DBMS / JDBC Lab Assessment Portal</p>
+                </div>
+            </div>
+            <div class="header-badge">Tomcat 10.1 &bull; MySQL &bull; JDBC</div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container">
+
+        <!-- Notification Message Banner (Success / Error) -->
+        <div id="alertBox" class="alert hidden" role="alert">
+            <span id="alertMessage"></span>
+            <button type="button" class="alert-close" onclick="closeAlert()">&times;</button>
+        </div>
+
+        <!-- Student Entry Form Section -->
+        <section class="card">
+            <div class="card-header">
+                <h2>Add New Student</h2>
+                <span class="card-tag">Create Operation</span>
+            </div>
+            <form id="addStudentForm" class="student-form" onsubmit="handleAddStudent(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="studentId">Student ID <span class="required">*</span></label>
+                        <input type="number" id="studentId" name="studentId" placeholder="e.g. 106" min="1" required>
+                        <small class="hint">Unique numeric identifier</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="name">Student Name <span class="required">*</span></label>
+                        <input type="text" id="name" name="name" placeholder="e.g. Ananya Sen" required>
+                        <small class="hint">Full student name</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department">Department <span class="required">*</span></label>
+                        <input type="text" id="department" name="department" placeholder="e.g. Computer Science" required>
+                        <small class="hint">Academic branch</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="e.g. ananya@college.edu" required>
+                        <small class="hint">Institutional email</small>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="addBtn">
+                        <span class="btn-icon">&#43;</span> Add Student
+                    </button>
+                    <button type="reset" class="btn btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Students Table Section -->
+        <section class="card">
+            <div class="card-header">
+                <div class="card-header-left">
+                    <h2>Student Records</h2>
+                    <span class="card-tag">Read, Update, Delete</span>
+                </div>
+                <div class="card-header-right">
+                    <button type="button" class="btn btn-outline" onclick="loadStudents()">
+                        &#x21bb; Refresh Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="table-responsive">
+                <table class="students-table" id="studentsTable">
+                    <thead>
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Email</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody">
+                        <!-- Populated dynamically by JavaScript -->
+                        <tr>
+                            <td colspan="5" class="table-status">Loading student records from database...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State Message (shown if no records) -->
+            <div id="emptyState" class="empty-state hidden">
+                <p>No student records found in the database.</p>
+                <small>Use the form above to add your first student record.</small>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Edit Student Modal (Form-editing section for update) -->
+    <div id="editModal" class="modal-backdrop hidden">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Edit Student Details</h3>
+                <button type="button" class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editStudentForm" onsubmit="handleUpdateStudent(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editStudentId">Student ID (Cannot be changed)</label>
+                        <input type="number" id="editStudentId" name="editStudentId" readonly disabled class="input-disabled">
+                        <small class="hint">Primary Key cannot be modified</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editName">Student Name <span class="required">*</span></label>
+                        <input type="text" id="editName" name="editName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editDepartment">Department <span class="required">*</span></label>
+                        <input type="text" id="editDepartment" name="editDepartment" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editEmail">Email Address <span class="required">*</span></label>
+                        <input type="email" id="editEmail" name="editEmail" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveUpdateBtn">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script src="js/script.js"></script>
+</body>
+</html>
